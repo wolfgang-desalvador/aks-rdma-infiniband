@@ -38,6 +38,39 @@ Depending on intended usage there are alterations that can be made to the `share
 
 ** This solution is modelled after: https://github.com/alexeldeib/aks-fpga **
 
+## Enabling IPoIB (EXPERIMENTAL)
+
+### DO NOT TEST THIS ON PRODUCTION CLUSTERS - EXPERIMENTAL FEATURE
+
+In order to enable IPoIB, the `ib0` network card needs to be attached to the Pods.
+
+In order to realize this, one of the most common ways is to use [Multus CNI plugin](https://github.com/k8snetworkplumbingwg/multus-cni).
+
+Azure Kubernetes Service does not officially support Multus CNI or multiple network cards, so please use at your own risk.
+
+In order to install Multus CNI on the AKS cluster use the followjng command from a `kubectl` enabled shell:
+
+```bash
+cat ./deployments/multus-daemonset-thick.yml | kubectl apply -f -
+```
+
+In order to attach `ib0` network card to a Pod, the following annotation should be added to the Pod spec:
+
+```yml
+    ...
+    metadata:
+       annotations:
+           k8s.v1.cni.cncf.io/networks: ib0@ib0
+    ...
+```
+
+This will allow to expose `ib0` inside the Pod namespace.
+
+Please be aware that current approach uses a `host-device` type this implies that `ib0` while Pods are running on a node will be removed from host namespace and moved completely to Pod namespace.
+
+This has also security implications since the `ib0` adapter will bypass AKS network layer and be directly attached to the Pod.
+
+For more details, refer to: https://www.cni.dev/plugins/current/main/host-device/
 
 ## Contributing
 
