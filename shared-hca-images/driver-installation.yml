@@ -105,7 +105,7 @@ data:
     set -x
 
     check_ib="$(ip link | grep ib0)"
-
+    
     if [ -z "$check_ib" ];
     then
       echo "driver installation failed"
@@ -113,6 +113,30 @@ data:
     else
       echo "driver installation successful"
     fi
+
+    echo "OS.EnableRDMA=y" >> /etc/waagent.conf
+    systemctl restart walinuxagent
+    sleep 5
+    ib0_ip=$(ip -4 -o addr show ib0 | awk '{print $4}' | cut -d "/" -f 1)
+    echo "Acquire ib0 address $ib0_ip"
+    echo "Creating Multus Configuration"
+    cat <<EOF > /etc/cni/net.d/ib-ib0.conf
+    {
+       "cniVersion": "0.3.1",
+       "type": "host-device",
+       "name": "ib0",
+       "device": "ib0", 
+       "ipam": {
+           "type": "static",
+           "addresses": [
+              {
+               "address": "IB0_IP/24"
+              }
+           ]
+           }   
+    }  
+    EOF
+    sed -i "s/IB0_IP/$ib0_ip/g" /etc/cni/net.d/ib-ib0.conf
     echo "installation completed in $SECONDS seconds"
     
 
@@ -132,7 +156,7 @@ data:
     set -x
 
     check_ib="$(ip link | grep ib0)"
-
+    
     if [ -z "$check_ib" ];
     then
       echo "driver installation failed"
@@ -140,5 +164,30 @@ data:
     else
       echo "driver installation successful"
     fi    
+
+    echo "OS.EnableRDMA=y" >> /etc/waagent.conf
+    systemctl restart walinuxagent
+    sleep 5
+    ib0_ip=$(ip -4 -o addr show ib0 | awk '{print $4}' | cut -d "/" -f 1)
+    echo "Acquire ib0 address $ib0_ip"
+    echo "Creating Multus Configuration"
+    cat <<EOF > /etc/cni/net.d/ib-ib0.conf
+    {
+       "cniVersion": "0.3.1",
+       "type": "host-device",
+       "name": "ib0",
+       "device": "ib0", 
+       "ipam": {
+           "type": "static",
+           "addresses": [
+              {
+               "address": "IB0_IP/24"
+              }
+           ]
+           }   
+    }  
+    EOF
+    sed -i "s/IB0_IP/$ib0_ip/g" /etc/cni/net.d/ib-ib0.conf
     echo "installation completed in $SECONDS seconds"
+
 ---
