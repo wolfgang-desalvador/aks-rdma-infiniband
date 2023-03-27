@@ -51,6 +51,8 @@ Azure Kubernetes Service does not officially support Multus CNI or multiple netw
 In order to install Multus CNI on the AKS cluster use the followjng command from a `kubectl` enabled shell:
 
 ```bash
+git clone https://github.com/k8snetworkplumbingwg/multus-cni.git
+cd multus-cni
 cat ./deployments/multus-daemonset-thick.yml | kubectl apply -f -
 ```
 
