@@ -22,7 +22,7 @@ Depending on intended usage there are alterations that can be made to the `share
 ## Quickstart
 1. Clone repository
 2. Build & push image (this image will later be available on mcr):
-    - build image locally specifying target AKS Ubuntu version: `docker build --build-arg UBUNTU_VERSION=18.04 -t <image-name> .` or `docker build --build-arg UBUNTU_VERSION=22.04 -t <image-name> .`
+    - build image locally specifying target AKS Ubuntu version: `docker build --build-arg UBUNTU_VERSION=18.04 --build-arg MELLANOX_VERSION=5.6-2.0.9.0 -t <image-name> .` or `docker build --build-arg UBUNTU_VERSION=22.04 --build-arg MELLANOX_VERSION=5.8-2.0.3.0 -t <image-name> .`
     - push image to ACR or other registry: https://docs.microsoft.com/en-us/azure/container-registry/container-registry-get-started-azure-cli
         - https://docs.microsoft.com/en-us/azure/container-registry/container-registry-auth-kubernetes#create-an-image-pull-secret
     - replace image name in `shared-hca-images/driver-installation.yml` with your image name
